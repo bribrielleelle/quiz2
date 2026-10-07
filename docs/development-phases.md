@@ -2,6 +2,8 @@
 
 The phases are ordered. Complete and verify each phase before moving on. This is a delivery plan, not an instruction to build the app now.
 
+Phase 1 decisions are recorded: five launch quizzes (Mathematics, General Science, World History, Geography, Literature); individual features (timed quiz mode; post-quiz answer review with explanations); teacher/admin provisioning via single-use invite codes with a one-time bootstrap for the first account; CSV import is add-only; attempts store selected answers for review.
+
 ## Phase 1 — Product decisions, specification, and design
 
 - Confirm quiz subjects, titles, audience, and initial question sources.
@@ -30,13 +32,14 @@ The phases are ordered. Complete and verify each phase before moving on. This is
 - Load and validate the five approved quizzes with at least ten questions each.
 - Calculate scores on the server and persist each submitted attempt exactly once.
 - Add the personal completed-attempt history.
+- Persist the selected answer for every question on each submitted attempt so attempts can be reviewed later.
 - Verify unsubmitted attempts are not stored as completions and retries create separate records.
 
 **Exit criteria:** a player can complete, score, retry, and review attempts; records survive server restarts.
 
 ## Phase 4 — Teacher authoring and CSV import
 
-- Build the teacher-only question editor for create and edit operations.
+- Build the teacher-only question editor for create and edit operations, including the optional explanation field and the per-quiz time limit.
 - Add the downloadable CSV template, upload, preview, row-level validation, and error display.
 - Apply valid imports transactionally; reject invalid uploads without partial writes.
 - Enforce the minimum-question rule before a quiz can be published.
@@ -47,7 +50,7 @@ The phases are ordered. Complete and verify each phase before moving on. This is
 ## Phase 5 — Leaderboards, individual features, QA, and production
 
 - Build the overall completed-attempt leaderboard and per-quiz best-score leaderboards.
-- Add the two approved individual functional features and their acceptance tests.
+- Add the two approved individual functional features and their acceptance tests: timed quiz mode with server-enforced expiry and auto-submit, and post-quiz answer review with explanations, reachable from the result page and attempt history.
 - Test the full application against the Phase 1 acceptance criteria, including role boundaries and tied leaderboard rankings.
 - Perform responsive and accessibility checks on the plain HTML interface.
 - Apply schema migrations and load reviewed quiz content into the separate production database.

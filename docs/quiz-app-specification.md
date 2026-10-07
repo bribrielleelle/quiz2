@@ -40,6 +40,16 @@ Keep the same application stack in development and production. Store database co
 
 Role checks must be enforced by the server on every protected API route, not only by hiding frontend controls. Public registration must never allow a registrant to select the teacher/admin role. A trusted provisioning process assigns elevated roles.
 
+### Teacher/admin provisioning
+
+Teacher/admin accounts are created through single-use invite codes:
+
+- Any existing teacher/admin can generate a single-use invite code with an expiry date.
+- A registrant who supplies a valid, unused, unexpired code receives the teacher/admin role; ordinary registrants always become players.
+- Applying a code marks it used and records who used it; codes cannot be reused.
+- The very first teacher/admin in each environment is created by a one-time bootstrap script that reads a secret from environment variables and runs once per database. After bootstrap, all further elevated accounts come from invite codes.
+- Invite-code creation and use are logged with the acting user.
+
 ## Quiz behavior
 
 - The app contains five working quizzes at launch.
@@ -51,7 +61,7 @@ Role checks must be enforced by the server on every protected API route, not onl
 - A submission is the completion event. Do not count a quiz that has not been submitted.
 - Avoid creating a completed-attempt record before submission. Incomplete work is not a leaderboard entry or completion.
 
-The five quiz subjects and question content remain to be chosen. Quiz content must be reviewed before launch so every published quiz meets the ten-question minimum.
+The five launch quizzes are Mathematics, General Science, World History, Geography, and Literature. Quiz content must be reviewed before launch so every published quiz meets the ten-question minimum.
 
 ## Accounts and security
 
@@ -74,6 +84,8 @@ Every submitted attempt, including a retry, is stored with:
 - completion date and time
 
 Each attempt is an immutable completion record. A user can read only their own history. Unsubmitted quizzes do not appear in history and do not contribute to counts or scores.
+
+Each submitted attempt also stores the selected answer for every question (a separate attempt_answers record per question). These records make Feature 2 review possible without changing what counts as a completion.
 
 ## Leaderboards
 
@@ -105,7 +117,7 @@ Completed attempts retain their recorded score, question count, and completion t
 ## CSV import
 
 - Provide a downloadable standard CSV template.
-- Suggested columns: `quiz`, `question`, `choice_a`, `choice_b`, `choice_c`, `choice_d`, `correct_choice`.
+- Suggested columns: `quiz`, `question`, `choice_a`, `choice_b`, `choice_c`, `choice_d`, `correct_choice`, `explanation` (optional).
 - `correct_choice` must be one of `A`, `B`, `C`, or `D`.
 - Require a teacher/admin role for upload and import.
 - Parse the file and show a preview before writing anything to the database.
@@ -114,22 +126,43 @@ Completed attempts retain their recorded score, question count, and completion t
 - Do not import until validation succeeds; import the accepted file in a database transaction so it cannot be partially applied.
 - Confirm after import how many questions were added or updated.
 
-The CSV update rule (always add new questions versus match and update existing questions) must be decided before implementation. The safest initial scope is add-only import, with edits handled in the question editor.
+Decided: CSV import is add-only. Every valid row creates a new question; existing questions are changed only through the question editor. This keeps the import path simple and avoids accidental bulk overwrites.
 
 ## Additional individual features
 
-Each student must design and implement two functional features beyond this shared specification. Those features must be documented individually before implementation and must not be counted as cosmetic changes or as any requirement above.
+Each student must design and implement two functional features beyond this shared specification. The two selected for this project are documented below. They are functional, individually testable, and beyond every shared requirement above.
 
-Reserve implementation and testing time in the schedule for these features. The two choices are intentionally open until the student selects them.
+### Feature 1 — Timed quiz mode
+
+- Teachers set an optional per-quiz time limit in minutes (blank or zero means untimed).
+- A timed quiz shows the player a countdown.
+- When the timer expires, the attempt is submitted automatically with whatever the player has answered; unanswered questions are scored as incorrect. This auto-submission is a submission event, so the attempt is recorded as complete.
+- The server records the attempt start time and enforces the deadline: a manual submission arriving after the deadline plus a short grace window (30 seconds) is scored only for the answers received, exactly like an auto-submit.
+- The time limit is editable in the teacher question editor and stored on the quiz.
+
+**Acceptance tests:** a quiz with a 1-minute limit auto-submits on expiry and appears in history with unanswered questions scored as incorrect; an untimed quiz shows no countdown; the server rejects scores computed beyond the deadline.
+
+### Feature 2 — Post-quiz answer review with explanations
+
+- Teachers can attach an optional explanation to each question, in the editor and in the CSV template.
+- Immediately after submission, the result page lists every question with the player's chosen answer, the correct answer, and the explanation when present.
+- Every submitted attempt stores the selected answer for each question, so the same read-only review can be reopened from the player's attempt history.
+- Reviews are visible only to the attempt's owner and to teacher/admin users.
+
+**Acceptance tests:** after submitting, the player sees per-question right/wrong with explanations; the same review is reachable from history after a server restart; another player cannot open someone else's review.
+
+Reserve implementation and testing time in the schedule for these features.
 
 ## Data model proposal
 
 Use relational tables with foreign keys and database constraints. A starting model:
 
 - **users:** id, username, normalized username, email, normalized email, password hash, role, created time.
-- **quizzes:** id, title, description, publication state, created/updated times.
-- **questions:** id, quiz id, prompt, choice A, choice B, choice C, choice D, correct choice, ordering, created/updated times.
-- **attempts:** id, user id, quiz id, score, question count, completion time.
+- **quizzes:** id, title, description, publication state, time limit in minutes (nullable), created/updated times.
+- **questions:** id, quiz id, prompt, choice A, choice B, choice C, choice D, correct choice, optional explanation, ordering, created/updated times.
+- **attempts:** id, user id, quiz id, score, question count, start time, completion time.
+- **attempt_answers:** attempt id, question id, selected choice; one row per question on a submitted attempt, used for review.
+- **invite_codes:** id, code hash, created by user id, expiry, used by user id, used time.
 
 Add uniqueness, not-null, range, and foreign-key constraints where applicable. Store timestamps consistently (UTC in the database; localize for display). Define delete behavior so deleting users, quizzes, or questions cannot silently erase historical attempts.
 
@@ -148,6 +181,8 @@ The following is an initial interface proposal; exact route names can be finaliz
 - `GET /api/leaderboards`
 - `GET /api/quizzes/:quizId/leaderboard`
 - Teacher-only question create/update and CSV preview/import routes under `/api/teacher/...`
+- `GET /api/me/attempts/:attemptId/review` (owner-only answer review of a submitted attempt)
+- Teacher/admin invite-code routes under `/api/teacher/invite-codes` (create and list)
 
 The attempt submission endpoint must calculate the score using server-side quiz data. Do not trust a score or correct-answer key supplied by the browser.
 
@@ -165,12 +200,15 @@ The attempt submission endpoint must calculate the score using server-side quiz 
 10. CSV upload has a preview and row-level validation; invalid files are not partially imported.
 11. Data survives an app restart.
 12. Development and production use separate PostgreSQL databases.
-13. Each student has two separately specified, functional additions and can demonstrate them in the deployed app.
+13. Each student has two separately specified, functional additions and can demonstrate them in the deployed app. The two selected additions are: (a) timed quiz mode with server-enforced expiry and auto-submit, and (b) post-quiz answer review with teacher-written explanations.
+14. A timed quiz auto-submits at expiry and the expired attempt is recorded and scored with unanswered questions as incorrect; untimed quizzes behave as before.
+15. A player can review their submitted answers, correct answers, and explanations immediately after submission and later from attempt history; only the attempt owner and teacher/admin can view a review.
+16. Only a valid, unused, unexpired invite code or the one-time bootstrap can create a teacher/admin account; ordinary registration always yields a player.
 
-## Decisions still needed
+## Decisions made
 
-- The subject and title of each of the five quizzes.
-- The two additional features for the individual student project.
-- Who provisions teacher/admin accounts and how the first teacher is created.
-- Whether CSV imports remain add-only or can update existing questions.
-- Whether attempts should also save selected answers for later review (not required by the current brief).
+- The five launch quizzes are Mathematics, General Science, World History, Geography, and Literature.
+- The two individual features are timed quiz mode and post-quiz answer review with explanations.
+- Teacher/admin accounts are provisioned through single-use admin invite codes; the first teacher/admin in each environment comes from a one-time bootstrap script using an environment secret.
+- CSV import is add-only; edits to existing questions happen in the question editor.
+- Attempts store the selected answer for each question, enabling Feature 2 review. Answer-by-answer review of past attempts is in scope through Feature 2.
