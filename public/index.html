@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quizzes · GHSQUI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;800&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<header class="site-nav">
+  <a class="logo" href="/"><span class="logo-mark">GHS</span>QUI</a>
+  <nav class="nav-links">
+    <a href="/">Quizzes</a>
+    <a href="/leaderboards.html">Leaderboards</a>
+    <a href="/history.html">My History</a>
+  </nav>
+  <div class="nav-right">
+    <span id="nav-user" class="nav-user"></span>
+    <a id="nav-auth" class="nav-auth" href="/login.html">LOG IN</a>
+    <button id="theme-toggle" class="theme-toggle" title="Toggle dark mode">&#9789;</button>
+  </div>
+</header>
+<main class="page">
+<section class="hero">
+  <h1><span class="logo-mark">GHS</span>QUI</h1>
+  <p>Take a quiz. Beat your best. Climb the leaderboard.</p>
+</section>
+<div id="quiz-list"><p class="badge-muted">Loading quizzes…</p></div>
+</main>
+<footer class="site-footer">GHSQUI · a high school project · <a href="https://github.com/bribrielleelle/quiz2">GitHub</a></footer>
+<script src="/js/app.js"></script>
+<script>
+async function loadQuizzes() {
+  const list = document.getElementById('quiz-list');
+  try {
+    const { quizzes } = await getJSON('/api/quizzes');
+    if (!quizzes.length) { list.innerHTML = '<div class="card"><p>No quizzes yet — check back soon!</p></div>'; return; }
+    list.innerHTML = quizzes.map((q) => `
+      <div class="card quiz-card">
+        <div>
+          <h2>${q.title}${q.time_limit_minutes ? '<span class="badge badge-gold">TIMED · ' + q.time_limit_minutes + ' MIN</span>' : ''}</h2>
+          <p>${q.description || ''}</p>
+          <p class="quiz-meta">${q.question_count} questions</p>
+        </div>
+        <a class="btn" href="/quiz.html?id=${q.id}">PRESS START</a>
+      </div>`).join('');
+  } catch (e) {
+    list.innerHTML = '<div class="card"><p>Could not load quizzes. Try refreshing.</p></div>';
+  }
+}
+document.addEventListener('DOMContentLoaded', loadQuizzes);</script>
+</body>
+</html>
