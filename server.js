@@ -22,12 +22,17 @@ app.use(
   })
 );
 
+// Attach the logged-in user (req.user) before any API route needs it.
+const { attachUser } = require('./middleware/auth');
+app.use(attachUser);
+
 // One Express server serves both the static frontend and the JSON API.
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api', require('./routes/quizzes'));
 app.use('/api', require('./routes/leaderboards'));
+app.use('/api', require('./routes/attempts'));
 
 // API 404 and error handling
 app.use('/api', (req, res) => res.status(404).json({ error: 'Not found.' }));

@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>My history · GHSQUI</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;800&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;800&family=Inter:wght@400;600&family=Press+Start+2P&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
@@ -24,10 +24,34 @@
 </header>
 <main class="page">
 <h1>MY HISTORY</h1>
-<div class="card"><p class="badge-muted">Your completed-attempt history and answer reviews are built in Phase 3. Every submitted attempt will be listed here with score, percentage, time, and a REVIEW link.</p></div>
+
+<div class="card" id="login-nudge" hidden>
+  <h2>LOG IN TO SEE YOUR HISTORY</h2>
+  <p>Every completed attempt is saved to your account.</p>
+  <a class="btn" id="login-nudge-link" href="/login.html">LOG IN</a>
+  <p class="quiz-meta" style="margin-top:0.75rem;">New here? <a href="/register.html">Create an account</a></p>
+</div>
+
+<div class="card" id="flow-error" hidden>
+  <h2>HMM...</h2>
+  <p id="flow-error-text"></p>
+</div>
+
+<div class="card" id="empty" hidden>
+  <p>No completed attempts yet. <a href="/">Go take a quiz!</a></p>
+</div>
+
+<div class="card" id="history-wrap" hidden>
+  <table id="history-table">
+    <thead>
+      <tr><th>Completed</th><th>Quiz</th><th>Score</th><th>%</th><th></th></tr>
+    </thead>
+    <tbody id="tbody"></tbody>
+  </table>
+</div>
 </main>
 <footer class="site-footer">GHSQUI · a high school project · <a href="https://github.com/bribrielleelle/quiz2">GitHub</a></footer>
 <script src="/js/app.js"></script>
-
+<script src="/js/history.js"></script>
 </body>
 </html>

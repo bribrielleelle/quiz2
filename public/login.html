@@ -51,8 +51,11 @@ document.getElementById('login-form').addEventListener('submit', async (ev) => {
         password: document.getElementById('password').value,
       }),
     });
-    window.location.href = '/';
+    // Return to the page the player came from (same-site path only).
+    const next = new URLSearchParams(window.location.search).get('next');
+    window.location.href = next && next.startsWith('/') && !next.startsWith('//') ? next : '/';
   } catch (e) { errEl.textContent = e.message; }
-});</script>
+});
+</script>
 </body>
 </html>

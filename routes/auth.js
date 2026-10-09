@@ -10,6 +10,12 @@ const USERNAME_RE = /^[A-Za-z0-9_-]{3,30}$/;
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const sha256 = (s) => crypto.createHash('sha256').update(s).digest('hex');
 
+// Current logged-in user (used by the nav bar and page guards).
+router.get('/me', (req, res) => {
+  if (!req.user) return res.status(401).json({ error: 'Not logged in.' });
+  res.json({ user: req.user });
+});
+
 router.post('/register', h(async (req, res) => {
   const { username, email, password, invite_code } = req.body || {};
   if (!USERNAME_RE.test(username || ''))
@@ -29,9 +35,8 @@ router.post('/register', h(async (req, res) => {
     let role = 'player';
     if (typeof invite_code === 'string' && invite_code.trim()) {
       const code = await client.query(
-        `SELECT id FROM invite_codes
-           WHERE code_hash = $1 AND used_by IS NULL AND expires_at > now()
-           FOR UPDATE`,
+        'SELECT id FROM invite_codes ' +
+          'WHERE code_hash = $1 AND used_by IS NULL AND expires_at > now() FOR UPDATE',
         [sha256(invite_code.trim())]
       );
       if (!code.rows.length) {
@@ -53,9 +58,8 @@ router.post('/register', h(async (req, res) => {
 
     const passwordHash = await bcrypt.hash(password, 12);
     const ins = await client.query(
-      `INSERT INTO users (username, username_normalized, email, email_normalized, password_hash, role)
-         VALUES ($1, $2, $3, $4, $5, $6)
-         RETURNING id, username, role`,
+      'INSERT INTO users (username, username_normalized, email, email_normalized, password_hash, role) ' +
+        'VALUES ($1, $2, $3, $4, $5, $6) RETURNING id, username, role',
       [username, username.toLowerCase(), email, email.toLowerCase(), passwordHash, role]
     );
     const user = ins.rows[0];
