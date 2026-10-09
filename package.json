@@ -1,0 +1,20 @@
+{
+  "name": "ghsqui",
+  "version": "0.2.0",
+  "private": true,
+  "description": "GHSQUI - high school quiz web app (Pusheen trivia)",
+  "engines": { "node": ">=24" },
+  "scripts": {
+    "start": "node server.js",
+    "migrate": "node db/migrate.js",
+    "seed": "node db/seed.js",
+    "make-admin": "node scripts/make-admin.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "dotenv": "^16.4.5",
+    "express": "^5.0.0",
+    "express-session": "^1.18.0",
+    "pg": "^8.12.0"
+  }
+}
