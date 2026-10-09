@@ -2,7 +2,7 @@
 
 The phases are ordered. Complete and verify each phase before moving on. This is a delivery plan, not an instruction to build the app now.
 
-Phase 1 decisions are recorded: five launch quizzes (Mathematics, General Science, World History, Geography, Literature); individual features (timed quiz mode; post-quiz answer review with explanations); teacher/admin provisioning via single-use invite codes with a one-time bootstrap for the first account; CSV import is add-only; attempts store selected answers for review.
+Phase 1 decisions are recorded: five launch quizzes (the Pusheen trivia sets — Meet Pusheen; Pusheen's Family Tree; Pusheen's Pals; The Story of Pusheen; Pusheen Merch & Media Mania); individual features (timed quiz mode; post-quiz answer review with explanations); teacher/admin provisioning via single-use invite codes with a one-time bootstrap for the first account; CSV import is add-only; attempts store selected answers for review.
 
 ## Phase 1 — Product decisions, specification, and design
 

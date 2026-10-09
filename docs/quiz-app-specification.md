@@ -61,7 +61,9 @@ Teacher/admin accounts are created through single-use invite codes:
 - A submission is the completion event. Do not count a quiz that has not been submitted.
 - Avoid creating a completed-attempt record before submission. Incomplete work is not a leaderboard entry or completion.
 
-The five launch quizzes are Mathematics, General Science, World History, Geography, and Literature. Quiz content must be reviewed before launch so every published quiz meets the ten-question minimum.
+The five launch quizzes are the Pusheen trivia sets: Meet Pusheen, Pusheen's Family Tree, Pusheen's Pals, The Story of Pusheen, and Pusheen Merch & Media Mania. Quiz content must be reviewed before launch so every published quiz meets the ten-question minimum.
+
+The quizzes use facts about the Pusheen brand as subject matter. Draft questions live in `docs/quiz-content-plan.md`. The app's own branding and artwork remain original: Pusheen's imagery is copyrighted and trademarked and must not appear in the app's UI or logo.
 
 ## Accounts and security
 
@@ -207,7 +209,7 @@ The attempt submission endpoint must calculate the score using server-side quiz 
 
 ## Decisions made
 
-- The five launch quizzes are Mathematics, General Science, World History, Geography, and Literature.
+- The five launch quizzes are the Pusheen trivia sets: Meet Pusheen, Pusheen's Family Tree, Pusheen's Pals, The Story of Pusheen, and Pusheen Merch & Media Mania. This replaced the earlier academic-subject plan. Quiz content about Pusheen is subject matter only; the app's own artwork stays original because Pusheen's imagery is copyrighted and trademarked.
 - The two individual features are timed quiz mode and post-quiz answer review with explanations.
 - Teacher/admin accounts are provisioned through single-use admin invite codes; the first teacher/admin in each environment comes from a one-time bootstrap script using an environment secret.
 - CSV import is add-only; edits to existing questions happen in the question editor.
