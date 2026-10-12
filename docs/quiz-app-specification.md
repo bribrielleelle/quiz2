@@ -188,6 +188,16 @@ The following is an initial interface proposal; exact route names can be finaliz
 
 The attempt submission endpoint must calculate the score using server-side quiz data. Do not trust a score or correct-answer key supplied by the browser.
 
+## Development phases and status
+
+The full delivery plan lives in `docs/development-phases.md`. Summary:
+
+- **Phase 1 — Product decisions, specification, and design:** done. Quiz subjects, individual features, provisioning, CSV behavior, page flows, and acceptance criteria are all recorded.
+- **Phase 2 — Project foundation, database, and accounts:** done. Express 5 server, schema migrations, registration/login/logout with hashed passwords, role checks, themed pages, leaderboard rules in SQL.
+- **Phase 3 — Quiz-taking, scoring, and attempt history:** done. Quiz flow with progress bar, server-side scoring, attempt + per-question answers persisted in one transaction, result page with answer review, attempt history, timed mode with server-stamped start tokens, seeded launch content, first-admin bootstrap.
+- **Phase 4 — Teacher authoring and CSV import (next):** teacher-only question editor (prompt, four choices, correct choice, optional explanation, quiz assignment, per-quiz time limit); downloadable CSV template, upload, preview with row-level validation and error display; transactional, add-only import; minimum-ten-questions publish gating; invite-code generation for teacher/admin accounts; permission and rollback testing. **Exit criteria:** authorized teachers maintain questions via the editor or a validated CSV; players cannot reach either authoring path.
+- **Phase 5 — Leaderboards, QA, and production:** leaderboard UI polish, QA against all acceptance criteria (role boundaries, tied rankings), responsive and accessibility checks, schema migration and content load into the separate production database, deployment verification.
+
 ## Acceptance criteria
 
 1. Five published quizzes are available, each with at least ten questions and exactly four choices per question.
