@@ -190,13 +190,68 @@ The attempt submission endpoint must calculate the score using server-side quiz 
 
 ## Development phases and status
 
-The full delivery plan lives in `docs/development-phases.md`. Summary:
+The delivery plan below mirrors `docs/development-phases.md`, with current status. The phases are ordered; each is completed and verified before the next begins.
 
-- **Phase 1 — Product decisions, specification, and design:** done. Quiz subjects, individual features, provisioning, CSV behavior, page flows, and acceptance criteria are all recorded.
-- **Phase 2 — Project foundation, database, and accounts:** done. Express 5 server, schema migrations, registration/login/logout with hashed passwords, role checks, themed pages, leaderboard rules in SQL.
-- **Phase 3 — Quiz-taking, scoring, and attempt history:** done. Quiz flow with progress bar, server-side scoring, attempt + per-question answers persisted in one transaction, result page with answer review, attempt history, timed mode with server-stamped start tokens, seeded launch content, first-admin bootstrap.
-- **Phase 4 — Teacher authoring and CSV import (next):** teacher-only question editor (prompt, four choices, correct choice, optional explanation, quiz assignment, per-quiz time limit); downloadable CSV template, upload, preview with row-level validation and error display; transactional, add-only import; minimum-ten-questions publish gating; invite-code generation for teacher/admin accounts; permission and rollback testing. **Exit criteria:** authorized teachers maintain questions via the editor or a validated CSV; players cannot reach either authoring path.
-- **Phase 5 — Leaderboards, QA, and production:** leaderboard UI polish, QA against all acceptance criteria (role boundaries, tied rankings), responsive and accessibility checks, schema migration and content load into the separate production database, deployment verification.
+### Phase 1 — Product decisions, specification, and design — DONE
+
+- Confirm quiz subjects, titles, audience, and initial question sources.
+- Choose and document each student's two additional functional features.
+- Decide the trusted process for creating teacher/admin accounts.
+- Confirm CSV import behavior and whether answer-by-answer review is out of scope.
+- Finalize page flows, access rules, schema, API outline, CSV template, and acceptance criteria.
+- Create the GitHub repository and agree on review and commit practices.
+
+**Exit criteria:** approved specification; named owners for quiz content and extra features; design for player, teacher, and unauthenticated flows.
+
+### Phase 2 — Project foundation, database, and accounts — DONE
+
+- Set up Node.js 24 LTS, npm scripts, committed `package-lock.json`, and Express 5.
+- Serve plain HTML, CSS, and JavaScript from the Express app; expose JSON APIs from the same server.
+- Configure Replit development PostgreSQL and a separate production PostgreSQL database without committing credentials.
+- Add repeatable schema migrations and the initial relational tables and constraints.
+- Implement password hashing, registration, login, logout, sessions, and server-side role/ownership checks.
+- Add basic form and API error handling.
+
+**Exit criteria:** the app starts in the Replit workspace; schema setup is repeatable; account flows work; player access cannot elevate itself to teacher/admin.
+
+Outstanding: run `npm install` in the Replit workspace and commit the generated `package-lock.json`.
+
+### Phase 3 — Quiz-taking, scoring, and attempt history — DONE
+
+- Build the quiz list, quiz-taking flow, submission result, and retry flow.
+- Load and validate the five approved quizzes with at least ten questions each.
+- Calculate scores on the server and persist each submitted attempt exactly once.
+- Add the personal completed-attempt history.
+- Persist the selected answer for every question on each submitted attempt so attempts can be reviewed later.
+- Verify unsubmitted attempts are not stored as completions and retries create separate records.
+
+**Exit criteria:** a player can complete, score, retry, and review attempts; records survive server restarts.
+
+Also delivered during this phase, pulled forward from Phase 5: the two individual features — timed quiz mode with server-stamped start tokens and auto-submit (Feature 1), and post-quiz answer review with explanations reachable from the result page and history (Feature 2) — plus seeded launch content and the one-time first-admin bootstrap script.
+
+### Phase 4 — Teacher authoring and CSV import — NEXT
+
+- Build the teacher-only question editor for create and edit operations, including the optional explanation field and the per-quiz time limit.
+- Add the downloadable CSV template, upload, preview, row-level validation, and error display.
+- Apply valid imports transactionally; reject invalid uploads without partial writes.
+- Enforce the minimum-question rule before a quiz can be published.
+- Add invite-code generation for teacher/admin accounts.
+- Test permissions, invalid data, duplicate submissions, and import rollback behavior.
+
+**Exit criteria:** authorized teachers can maintain questions using the editor or a validated CSV; players cannot reach either authoring path.
+
+### Phase 5 — Leaderboards, QA, and production — REMAINING
+
+- Finish the overall and per-quiz leaderboard UI (the deterministic ranking rules are already implemented in SQL from Phase 2).
+- Verify the two individual features against their acceptance tests (both shipped in Phase 3).
+- Test the full application against the Phase 1 acceptance criteria, including role boundaries and tied leaderboard rankings.
+- Perform responsive and accessibility checks on the plain HTML interface.
+- Re-verify Quiz 5 (Pusheen Merch & Media Mania) facts before launch, since merchandise and platform facts drift over time.
+- Apply schema migrations and load reviewed quiz content into the separate production database.
+- Verify the deployed application uses production PostgreSQL and that all required features work there.
+- Document setup, environment configuration, database migration, CSV format, and deployment steps in GitHub.
+
+**Exit criteria:** all shared and individual requirements pass QA in the development workspace and are verified in the deployed app.
 
 ## Acceptance criteria
 
