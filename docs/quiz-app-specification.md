@@ -4,7 +4,7 @@
 
 Build a web app for students to take quizzes, review their completed-attempt history, and compare results on leaderboards. Teachers can maintain quiz questions through an editor or validated CSV import.
 
-This is a planning document only. No application code is being built yet.
+This document is the source of truth for requirements and acceptance criteria. Planning is complete; Phases 2 (foundation) and 3 (quiz-taking flow) are built and on `main`. See `docs/development-phases.md` for progress.
 
 ## Agreed technology and environments
 
