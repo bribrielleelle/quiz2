@@ -1,26 +1,28 @@
-/* GHSQUI theme: navy + gold, retro arcade, light default with dark mode toggle */
+/* GHSQUI theme: cream + blush pink + espresso, retro arcade, light default with dark mode toggle */
+/* Core palette: #fffdee cream, #fbd1e6 blush pink, #878787 warm gray, #31261c espresso brown.
+   Variable names --navy/--gold are historical; they now hold espresso brown and blush pink. */
 :root {
-  --navy: #1b2a4a;
-  --navy-soft: #2c3f66;
-  --gold: #f0b429;
-  --gold-deep: #c8931a;
-  --bg: #f7f5ef;
+  --navy: #31261c;
+  --navy-soft: #4a3b2c;
+  --gold: #fbd1e6;
+  --gold-deep: #b25e88;
+  --bg: #fffdee;
   --card: #ffffff;
-  --text: #1b2a4a;
-  --muted: #66707f;
-  --border: #d9d4c5;
-  --shadow: #1b2a4a;
+  --text: #31261c;
+  --muted: #878787;
+  --border: #e6dfcb;
+  --shadow: #31261c;
 }
 [data-theme='dark'] {
-  --navy: #101a30;
-  --navy-soft: #1b2a4a;
-  --gold: #f0b429;
-  --bg: #0d1526;
-  --card: #1b2a4a;
-  --text: #f0e9d8;
-  --muted: #9aa6b8;
-  --border: #2c3f66;
-  --shadow: #000814;
+  --navy: #241c14;
+  --navy-soft: #31261c;
+  --gold: #fbd1e6;
+  --bg: #1b140d;
+  --card: #31261c;
+  --text: #fffdee;
+  --muted: #878787;
+  --border: #4a3b2c;
+  --shadow: #0d0906;
 }
 
 * { box-sizing: border-box; }
@@ -49,7 +51,7 @@ h1, h2, h3, .logo, .btn { font-family: 'Poppins', 'Inter', sans-serif; }
 .logo { font-weight: 800; font-size: 1.3rem; color: #fff; text-decoration: none; letter-spacing: 1px; }
 .logo-mark { background: var(--gold); color: var(--navy); padding: 0.1rem 0.4rem; }
 .nav-links { display: flex; gap: 1rem; }
-.nav-links a { color: #dfe6f2; text-decoration: none; font-weight: 600; font-size: 0.9rem; }
+.nav-links a { color: #efe8d8; text-decoration: none; font-weight: 600; font-size: 0.9rem; }
 .nav-links a:hover { color: var(--gold); }
 .nav-right { margin-left: auto; display: flex; align-items: center; gap: 0.75rem; }
 .nav-user { color: var(--gold); font-weight: 600; font-size: 0.9rem; }

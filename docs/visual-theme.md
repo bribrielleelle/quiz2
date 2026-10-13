@@ -1,23 +1,27 @@
 # GHSQUI Visual Theme
 
-The visual theme for the GHSQUI quiz app. This is a design reference only; implementation happens in later phases using plain HTML, CSS, and browser JavaScript.
+The visual theme for the GHSQUI quiz app, implemented with plain HTML, CSS, and browser JavaScript. The palette below is the source of truth; it replaced the original navy + gold design.
 
 ## Brand
 
 - **App name:** GHSQUI
-- **Logo:** An emblem/badge — a shield or crest built around the GHSQUI initials with a retro-arcade flavor (pixel-edged badge, gold trim on navy).
+- **Logo:** An emblem/badge — a shield or crest built around the GHSQUI initials with a retro-arcade flavor (pixel-edged badge, blush-pink trim on espresso brown).
 - **Mood:** Nerdy and playful — a high-score arcade feel that stays appropriate for a teacher-approved school tool.
 - **Audience:** High school classmates, casual and fun. Quiz-taking screens lean playful; history, CSV import, and the question editor stay clean and neutral.
 
 ## Colors
 
-- **Primary — Navy blue:** main brand color for headers, buttons, and the dark-mode base.
-- **Accent — Gold:** highlights, scores, leaderboard trophies, and emblem trim.
-- **Modes:**
-  - Light (default): light background, navy text, gold highlights.
-  - Dark (toggleable): navy background, gold accents.
+Four core colors; every other shade on screen is a tint or shade of these:
 
-Define both palettes as CSS variables (e.g. `--navy`, `--gold`, `--bg`, `--text`) with a dark-mode override so the toggle is a single class change on the root element.
+- **Primary — Espresso brown `#31261c`:** text, borders, nav bar, and the dark-mode base.
+- **Accent — Blush pink `#fbd1e6`:** buttons, badges, highlights, scores, and leaderboard first place.
+- **Background — Cream `#fffdee`:** the light-mode page background.
+- **Muted — Warm gray `#878787`:** secondary text.
+- **Modes:**
+  - Light (default): cream background, espresso text, blush-pink highlights.
+  - Dark (toggleable): deep espresso background, cream text, blush-pink accents.
+
+Define both palettes as CSS variables (e.g. `--navy`, `--gold`, `--bg`, `--text`) with a dark-mode override so the toggle is a single attribute change on the root element. The `--navy`/`--gold` variable names are historical; they now hold espresso brown and blush pink.
 
 ## Visual style
 
@@ -32,7 +36,7 @@ Retro arcade with pixel touches:
 
 - **Headings:** Poppins (geometric, bold).
 - **Body:** Inter.
-- **Accent (optional):** a pixel font such as "Press Start 2P" only for scores, timers, and leaderboard headings.
+- **Accent:** "Press Start 2P" only for scores, timers, and result headers.
 
 Two font imports; system fallbacks for offline reliability.
 
@@ -40,4 +44,4 @@ Two font imports; system fallbacks for offline reliability.
 
 - No heavy frameworks: the theme is achievable with CSS variables, two Google Fonts imports, and simple pixel effects via borders and box-shadows.
 - Both light and dark palettes defined up front; dark mode is a toggle that swaps the CSS variable set.
-- Leaderboards use gold for first place; ties render identically per the spec's deterministic sort.
+- Leaderboards use blush pink for first place; ties render identically per the spec's deterministic sort.
