@@ -5,7 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Teacher area · GHSQUI</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;800&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;800&family=Inter:wght@400;600&family=Press+Start+2P&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
@@ -23,11 +24,114 @@
   </div>
 </header>
 <main class="page">
-<h1>TEACHER AREA</h1>
-<div class="card"><p class="badge-muted">The question editor, CSV import, and invite-code manager are built in Phase 4. This page will be visible only to teacher/admin accounts.</p></div>
+
+<div id="gate" class="card" style="display:none">
+  <h2>TEACHER AREA</h2>
+  <p id="gate-msg">Loading…</p>
+</div>
+
+<div id="teacher-app" style="display:none">
+  <h1>TEACHER AREA</h1>
+
+  <div class="card">
+    <h2>QUIZ SETTINGS</h2>
+    <div class="teacher-toolbar">
+      <select id="quiz-select" aria-label="Choose a quiz"></select>
+    </div>
+    <div id="quiz-settings">
+      <p class="quiz-meta" id="quiz-meta"></p>
+      <form id="settings-form" class="grow">
+        <label for="time-limit">Time limit in minutes (blank or 0 = untimed)</label>
+        <input id="time-limit" type="number" min="0" max="180" step="1">
+        <label for="quiz-description">Description</label>
+        <textarea id="quiz-description" rows="2" maxlength="300"></textarea>
+        <div class="quiz-actions">
+          <button class="btn" type="submit">SAVE SETTINGS</button>
+          <button class="btn btn-secondary" id="publish-btn" type="button">PUBLISH</button>
+        </div>
+        <p class="form-error" id="settings-error"></p>
+      </form>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>QUESTIONS</h2>
+    <div class="teacher-toolbar">
+      <button class="btn" id="new-question-btn" type="button">+ NEW QUESTION</button>
+      <span class="inline-note" id="question-count-note"></span>
+    </div>
+    <table id="questions-table">
+      <thead><tr><th>#</th><th>Question</th><th>Answer</th><th>Actions</th></tr></thead>
+      <tbody></tbody>
+    </table>
+
+    <form id="question-form" class="grow" style="display:none">
+      <h3 id="question-form-title">NEW QUESTION</h3>
+      <input type="hidden" id="question-id">
+      <label for="qf-quiz">Quiz</label>
+      <select id="qf-quiz"></select>
+      <label for="qf-prompt">Question prompt</label>
+      <textarea id="qf-prompt" rows="2" maxlength="500" required></textarea>
+      <label for="qf-a">Choice A</label>
+      <input id="qf-a" maxlength="200" required>
+      <label for="qf-b">Choice B</label>
+      <input id="qf-b" maxlength="200" required>
+      <label for="qf-c">Choice C</label>
+      <input id="qf-c" maxlength="200" required>
+      <label for="qf-d">Choice D</label>
+      <input id="qf-d" maxlength="200" required>
+      <label for="qf-correct">Correct choice</label>
+      <select id="qf-correct">
+        <option value="A">A</option>
+        <option value="B">B</option>
+        <option value="C">C</option>
+        <option value="D">D</option>
+      </select>
+      <label for="qf-explanation">Explanation (optional — shown on answer review)</label>
+      <textarea id="qf-explanation" rows="2" maxlength="500"></textarea>
+      <div class="quiz-actions">
+        <button class="btn" type="submit">SAVE QUESTION</button>
+        <button class="btn btn-secondary" type="button" id="cancel-question-btn">CANCEL</button>
+      </div>
+      <p class="form-error" id="question-error"></p>
+    </form>
+  </div>
+
+  <div class="card">
+    <h2>CSV IMPORT (ADD-ONLY)</h2>
+    <p class="inline-note csv-steps">1) Download the template · 2) fill in one question per row (quiz titles must match exactly) · 3) preview · 4) import. Import adds new questions only — edit existing ones above. Invalid files are rejected without partial writes.</p>
+    <div class="teacher-toolbar">
+      <a class="btn btn-secondary" href="/api/teacher/csv/template" download>DOWNLOAD TEMPLATE</a>
+      <input type="file" id="csv-file" accept=".csv,text/csv" aria-label="CSV file">
+      <button class="btn btn-secondary" id="csv-preview-btn" type="button">PREVIEW</button>
+      <button class="btn" id="csv-import-btn" type="button" disabled>IMPORT</button>
+    </div>
+    <p class="form-error" id="csv-error"></p>
+    <div id="csv-preview"></div>
+  </div>
+
+  <div class="card">
+    <h2>TEACHER INVITE CODES</h2>
+    <p class="inline-note">A single-use code turns one new registration into a teacher account. The code is shown only once; only its hash is stored.</p>
+    <form id="invite-form" class="grow">
+      <div class="teacher-toolbar">
+        <label for="invite-days" style="margin-top:0">Expires in (days)</label>
+        <input id="invite-days" type="number" min="1" max="90" value="7" style="width:110px">
+        <button class="btn" type="submit">GENERATE CODE</button>
+      </div>
+    </form>
+    <div id="code-display"></div>
+    <p class="form-error" id="invite-error"></p>
+    <table id="codes-table">
+      <thead><tr><th>Created</th><th>Expires</th><th>Status</th><th>Used by</th></tr></thead>
+      <tbody></tbody>
+    </table>
+  </div>
+</div>
+
 </main>
 <footer class="site-footer">GHSQUI · a high school project · <a href="https://github.com/bribrielleelle/quiz2">GitHub</a></footer>
 <script src="/js/app.js"></script>
-
+<script src="/js/teacher.js"></script>
 </body>
 </html>

@@ -179,6 +179,32 @@ tr.rank-1 td { background: color-mix(in srgb, var(--gold) 30%, transparent); fon
 }
 .login-nudge { text-align: center; }
 
+/* ----- Teacher area (Phase 4) ----- */
+textarea {
+  width: 100%; padding: 0.55rem; border: 3px solid var(--navy);
+  background: var(--card); color: var(--text); font-family: inherit; font-size: 1rem;
+  resize: vertical;
+}
+form.grow { max-width: none; }
+.teacher-toolbar { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 0.75rem; }
+.teacher-toolbar select { width: auto; min-width: 240px; }
+.teacher-toolbar input[type='file'] { width: auto; padding: 0.35rem; }
+.inline-note { color: var(--muted); font-size: 0.85rem; }
+.csv-steps { margin: 0.4rem 0 0.8rem; }
+.actions-cell { white-space: nowrap; }
+.actions-cell .btn { padding: 0.25rem 0.55rem; font-size: 0.7rem; margin-right: 0.4rem; }
+.btn-danger { background: var(--card); color: #b3261e; border-color: #b3261e; box-shadow: 3px 3px 0 var(--shadow); }
+.csv-preview-note { font-weight: 600; margin: 0.75rem 0 0.25rem; }
+.row-valid td { background: color-mix(in srgb, var(--gold) 12%, transparent); }
+.row-invalid td { background: color-mix(in srgb, #b3261e 10%, transparent); }
+.error-list { color: #b3261e; font-size: 0.8rem; margin: 0.2rem 0 0; padding-left: 1.1rem; }
+.code-box {
+  font-family: 'Press Start 2P', monospace; font-size: 0.8rem;
+  background: var(--navy); color: var(--gold); border: 3px solid var(--gold);
+  padding: 0.8rem 1rem; margin: 0.75rem 0; word-break: break-all;
+  box-shadow: 4px 4px 0 var(--shadow);
+}
+
 @media (max-width: 600px) {
   .nav-links { order: 3; width: 100%; }
 }
