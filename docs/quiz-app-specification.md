@@ -4,7 +4,7 @@
 
 Build a web app for students to take quizzes, review their completed-attempt history, and compare results on leaderboards. Teachers can maintain quiz questions through an editor or validated CSV import.
 
-This document is the source of truth for requirements and acceptance criteria. Planning is complete; Phases 2 (foundation), 3 (quiz-taking flow), and 4 (teacher authoring and CSV import) are built and on `main`. See `docs/development-phases.md` for progress.
+This document is the source of truth for requirements and acceptance criteria. Planning is complete; Phases 2 (foundation), 3 (quiz-taking flow), and 4 (teacher authoring and CSV import) are built and on `main`. Phase 5 (QA and production) is in progress: the leaderboard UI is live, the QA/deployment specification is generated, and Quiz 5 facts are re-verified; the QA run and production deployment remain. See `docs/development-phases.md` for progress and `docs/phase5-qa-and-deployment.md` for the Phase 5 checklist.
 
 ## Agreed technology and environments
 
@@ -263,7 +263,7 @@ Also delivered during this phase, pulled forward from Phase 5: the two individua
 
 **Exit criteria:** authorized teachers can maintain questions using the editor or a validated CSV; players cannot reach either authoring path.
 
-### Phase 5 — Leaderboards, QA, and production — REMAINING
+### Phase 5 — Leaderboards, QA, and production — IN PROGRESS
 
 - Finish the overall and per-quiz leaderboard UI (the deterministic ranking rules are already implemented in SQL from Phase 2).
 - Verify the two individual features against their acceptance tests (both shipped in Phase 3).
@@ -275,6 +275,8 @@ Also delivered during this phase, pulled forward from Phase 5: the two individua
 - Document setup, environment configuration, database migration, CSV format, and deployment steps in GitHub.
 
 **Exit criteria:** all shared and individual requirements pass QA in the development workspace and are verified in the deployed app.
+
+Also delivered during this phase: the leaderboard UI (overall + per-quiz, deterministic ranking) was already live from Phase 3; the QA and deployment specification was generated (`docs/phase5-qa-and-deployment.md`); an accessibility polish pass added aria labels, a keyboard-friendly theme toggle name, and an announced leaderboard empty state; and all ten Quiz 5 answers were re-verified as current (October 2026). Remaining: execute the QA checklist in the development workspace, then deploy to production with its separate database.
 
 ## Acceptance criteria
 
