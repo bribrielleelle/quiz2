@@ -180,7 +180,6 @@ The following is an initial interface proposal; exact route names can be finaliz
 - `POST /api/auth/logout`
 - `GET /api/auth/me`
 - `GET /api/quizzes`
-- `GET /api/quizzes/:quizId`
 - `GET /api/quizzes/:quizId` — serves the question set together with a server-signed start token (the timed-mode start event; no attempt record exists yet)
 - `POST /api/quizzes/:quizId/attempts` — submits the attempt with its start token; the server verifies the token, enforces the timed deadline, and scores. Untimed quizzes use the same flow.
 - `GET /api/me/attempts`
