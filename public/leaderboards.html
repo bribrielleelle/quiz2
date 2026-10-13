@@ -27,10 +27,10 @@
 <div class="card">
   <div class="tab-row">
     <button class="btn" id="tab-overall">OVERALL</button>
-    <select id="quiz-select" style="max-width:280px;"><option value="">Choose a quiz…</option></select>
+    <select id="quiz-select" aria-label="Choose a quiz leaderboard" style="max-width:280px;"><option value="">Choose a quiz…</option></select>
   </div>
   <table id="lb-table"><thead><tr><th>RANK</th><th>PLAYER</th><th id="lb-metric-head">COMPLETED ATTEMPTS</th></tr></thead><tbody></tbody></table>
-  <p id="lb-empty" class="badge-muted"></p>
+  <p id="lb-empty" class="badge-muted" role="status"></p>
 </div>
 </main>
 <footer class="site-footer">GHSQUI · a high school project · <a href="https://github.com/bribrielleelle/quiz2">GitHub</a></footer>

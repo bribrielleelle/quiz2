@@ -205,6 +205,9 @@ form.grow { max-width: none; }
   box-shadow: 4px 4px 0 var(--shadow);
 }
 
+/* ----- Leaderboards (Phase 5 polish) ----- */
+.tab-row { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 1rem; }
+
 @media (max-width: 600px) {
   .nav-links { order: 3; width: 100%; }
 }
