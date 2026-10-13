@@ -28,6 +28,16 @@ async function initNav() {
     if (userEl) userEl.textContent = user.username + (user.role !== 'player' ? ' [' + user.role + ']' : '');
     if (authEl) { authEl.textContent = 'LOG OUT'; authEl.href = '#'; authEl.id = 'nav-logout'; }
     document.body.setAttribute('data-auth', 'yes');
+    // Staff get a Teacher link in the nav (the page itself checks the role too).
+    if (user.role !== 'player') {
+      const links = document.querySelector('.nav-links');
+      if (links && !links.querySelector('a[href="/teacher.html"]')) {
+        const a = document.createElement('a');
+        a.href = '/teacher.html';
+        a.textContent = 'Teacher';
+        links.appendChild(a);
+      }
+    }
   } catch (e) {
     if (userEl) userEl.textContent = '';
   }

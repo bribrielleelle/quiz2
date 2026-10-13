@@ -36,9 +36,9 @@ docs/                 specification, phases, theme, feature specs, content plan,
 db/migrations/        versioned SQL migrations (applied in order, tracked in schema_migrations)
 db/migrate.js         repeatable migration runner (npm run migrate)
 db/seed.js            launch content: 5 Pusheen quizzes, 50 questions (npm run seed)
-lib/                  shared server helpers (signed quiz start tokens)
+lib/                  shared server helpers (signed quiz start tokens, CSV parsing)
 public/               static frontend (pages, css, js)
-routes/               Express routers (auth, quizzes, leaderboards, attempts)
+routes/               Express routers (auth, quizzes, leaderboards, attempts, teacher)
 scripts/              one-time operational scripts (first-admin bootstrap)
 server.js             Express app entry point
 ```
@@ -47,7 +47,7 @@ server.js             Express app entry point
 
 - **Phase 2 — foundation:** done. Express 5 server, schema, auth with roles and hashed passwords, themed pages, leaderboard rules in SQL.
 - **Phase 3 — quiz-taking:** done. Full quiz flow (one question per screen, progress bar, optional timed mode with server-stamped start tokens and auto-submit — Feature 1), server-side scoring, attempts and per-question answers saved in one transaction, result page with per-question review and explanations (Feature 2), attempt history with review links, seeded launch content, first-admin bootstrap, login returns you to where you were.
-- **Phase 4 — teacher tools (next):** question editor, CSV template + validated add-only import, invite-code generation, publish gating at ten questions.
-- **Phase 5:** leaderboard UI polish, QA against all acceptance criteria, production deployment with a separate database.
+- **Phase 4 — teacher tools:** done. Teacher/admin-only question editor (create, edit, reassign, delete with the auto-unpublish rule below ten questions), quiz settings including the time limit and publish/unpublish with the ten-question gate, downloadable CSV template + preview with row-level validation + transactional add-only import, and single-use invite-code generation.
+- **Phase 5 (next):** leaderboard UI polish, QA against all acceptance criteria, production deployment with a separate database.
 
 See `docs/development-phases.md` for the full plan and `docs/app-design.md` for navigation, page designs, and leaderboard rules.

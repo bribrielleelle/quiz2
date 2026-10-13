@@ -4,7 +4,7 @@
 
 Build a web app for students to take quizzes, review their completed-attempt history, and compare results on leaderboards. Teachers can maintain quiz questions through an editor or validated CSV import.
 
-This document is the source of truth for requirements and acceptance criteria. Planning is complete; Phases 2 (foundation) and 3 (quiz-taking flow) are built and on `main`. See `docs/development-phases.md` for progress.
+This document is the source of truth for requirements and acceptance criteria. Planning is complete; Phases 2 (foundation), 3 (quiz-taking flow), and 4 (teacher authoring and CSV import) are built and on `main`. See `docs/development-phases.md` for progress.
 
 ## Agreed technology and environments
 
@@ -120,7 +120,7 @@ Completed attempts retain their recorded score, question count, and completion t
 ## CSV import
 
 - Provide a downloadable standard CSV template.
-- Suggested columns: `quiz`, `question`, `choice_a`, `choice_b`, `choice_c`, `choice_d`, `correct_choice`, `explanation` (optional).
+- Columns (the header row must match exactly): `quiz`, `question`, `choice_a`, `choice_b`, `choice_c`, `choice_d`, `correct_choice`, `explanation` (optional). The template's comment lines (starting with `#`) are ignored by the parser.
 - `correct_choice` must be one of `A`, `B`, `C`, or `D`.
 - The `quiz` column expects the quiz title exactly as it appears in the app — not the internal quiz ID. The downloadable template lists the valid titles; matching trims surrounding whitespace and is otherwise case-sensitive.
 - A row whose `quiz` value does not match an existing quiz is a row-level validation error (e.g. "Quiz 'Pusheen Pals II' does not exist"); import never creates or renames quizzes.
@@ -129,7 +129,7 @@ Completed attempts retain their recorded score, question count, and completion t
 - Validate required fields, correct-choice values, quiz assignment, and the four-choice structure.
 - Identify invalid rows by CSV row number and explain each error.
 - Do not import until validation succeeds; import the accepted file in a database transaction so it cannot be partially applied.
-- Confirm after import how many questions were added or updated.
+- Confirm after import how many questions were added (import is add-only).
 
 Decided: CSV import is add-only. Every valid row creates a new question; existing questions are changed only through the question editor. This keeps the import path simple and avoids accidental bulk overwrites.
 
@@ -181,18 +181,18 @@ The following is an initial interface proposal; exact route names can be finaliz
 - `GET /api/auth/me`
 - `GET /api/quizzes`
 - `GET /api/quizzes/:quizId`
-- `POST /api/quizzes/:quizId/attempts/start` — initialize an attempt for the logged-in player. The server records the attempt start timestamp and returns the attempt identifier, the server start time, and, for timed quizzes, the deadline the countdown is based on.
-- `POST /api/quizzes/:quizId/attempts/:attemptId/submit` — submit the initialized attempt. The server scores it against the recorded start time; untimed quizzes use the same pair of endpoints so all attempts share one flow.
+- `GET /api/quizzes/:quizId` — serves the question set together with a server-signed start token (the timed-mode start event; no attempt record exists yet)
+- `POST /api/quizzes/:quizId/attempts` — submits the attempt with its start token; the server verifies the token, enforces the timed deadline, and scores. Untimed quizzes use the same flow.
 - `GET /api/me/attempts`
 - `GET /api/leaderboards`
 - `GET /api/quizzes/:quizId/leaderboard`
-- Teacher-only question create/update and CSV preview/import routes under `/api/teacher/...`
+- Teacher-only routes under `/api/teacher/...`: quiz settings and publish/unpublish, question create/update/delete, CSV template download/preview/import, and invite-code create/list.
 - `GET /api/me/attempts/:attemptId/review` (owner-only answer review of a submitted attempt)
 - Teacher/admin invite-code routes under `/api/teacher/invite-codes` (create and list)
 
 The attempt submission endpoint must calculate the score using server-side quiz data. Do not trust a score or correct-answer key supplied by the browser.
 
-An initialized attempt is not a completion record; it counts only once submitted. Submission must reference a valid in-progress attempt for the current user, and the server enforces the timed-mode deadline from the stored start timestamp.
+An initialized attempt is not a completion record; it counts only once submitted. The server enforces the timed-mode deadline from the signed start token — the browser can never supply or forge a start time.
 
 ## Visual theme and color scheme
 
@@ -252,7 +252,7 @@ Outstanding: run `npm install` in the Replit workspace and commit the generated 
 
 Also delivered during this phase, pulled forward from Phase 5: the two individual features — timed quiz mode with server-stamped start tokens and auto-submit (Feature 1), and post-quiz answer review with explanations reachable from the result page and history (Feature 2) — plus seeded launch content and the one-time first-admin bootstrap script.
 
-### Phase 4 — Teacher authoring and CSV import — NEXT
+### Phase 4 — Teacher authoring and CSV import — DONE
 
 - Build the teacher-only question editor for create and edit operations, including the optional explanation field and the per-quiz time limit.
 - Add the downloadable CSV template, upload, preview, row-level validation, and error display.
@@ -304,4 +304,4 @@ Also delivered during this phase, pulled forward from Phase 5: the two individua
 - CSV import is add-only; edits to existing questions happen in the question editor.
 - Attempts store the selected answer for each question, enabling Feature 2 review. Answer-by-answer review of past attempts is in scope through Feature 2.
 - The color scheme was updated to the four-color palette — #fffdee (cream), #fbd1e6 (blush pink), #878787 (warm gray), #31261c (espresso brown) — replacing the original navy + gold. Layout, typography, and arcade styling are unchanged, and all branding remains original artwork.
-- Specification-review clarifications: the CSV `quiz` column matches existing quiz titles (never internal IDs, and import never creates quizzes); deleting a question that would drop a published quiz below ten valid questions unpublishes the quiz; timed attempts initialize through a start endpoint that returns the server-side start timestamp and deadline before submission.
+- Specification-review clarifications: the CSV `quiz` column matches existing quiz titles (never internal IDs, and import never creates quizzes); deleting a question that would drop a published quiz below ten valid questions unpublishes the quiz; timed attempts start when the server signs a start token while serving the questions, and submission verifies that token against the deadline.
