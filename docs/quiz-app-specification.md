@@ -113,6 +113,7 @@ Each submitted attempt also stores the selected answer for every question (a sep
 - Validate that the question has all required values and one correct choice.
 - Prevent publishing a quiz with fewer than ten valid questions.
 - Ask for confirmation before removing a question or changing a quiz assignment if existing attempts may be affected.
+- Deleting a question from a published quiz is allowed with confirmation, but if the deletion would leave fewer than ten valid questions, the quiz is automatically unpublished and the teacher is warned beforehand. Republishing requires ten valid questions again; existing attempts and leaderboards are unaffected.
 
 Completed attempts retain their recorded score, question count, and completion time if quiz content is later edited. Showing historical answer-by-answer detail is not required by the current brief.
 
@@ -121,6 +122,8 @@ Completed attempts retain their recorded score, question count, and completion t
 - Provide a downloadable standard CSV template.
 - Suggested columns: `quiz`, `question`, `choice_a`, `choice_b`, `choice_c`, `choice_d`, `correct_choice`, `explanation` (optional).
 - `correct_choice` must be one of `A`, `B`, `C`, or `D`.
+- The `quiz` column expects the quiz title exactly as it appears in the app — not the internal quiz ID. The downloadable template lists the valid titles; matching trims surrounding whitespace and is otherwise case-sensitive.
+- A row whose `quiz` value does not match an existing quiz is a row-level validation error (e.g. "Quiz 'Pusheen Pals II' does not exist"); import never creates or renames quizzes.
 - Require a teacher/admin role for upload and import.
 - Parse the file and show a preview before writing anything to the database.
 - Validate required fields, correct-choice values, quiz assignment, and the four-choice structure.
@@ -178,7 +181,8 @@ The following is an initial interface proposal; exact route names can be finaliz
 - `GET /api/auth/me`
 - `GET /api/quizzes`
 - `GET /api/quizzes/:quizId`
-- `POST /api/quizzes/:quizId/attempts`
+- `POST /api/quizzes/:quizId/attempts/start` — initialize an attempt for the logged-in player. The server records the attempt start timestamp and returns the attempt identifier, the server start time, and, for timed quizzes, the deadline the countdown is based on.
+- `POST /api/quizzes/:quizId/attempts/:attemptId/submit` — submit the initialized attempt. The server scores it against the recorded start time; untimed quizzes use the same pair of endpoints so all attempts share one flow.
 - `GET /api/me/attempts`
 - `GET /api/leaderboards`
 - `GET /api/quizzes/:quizId/leaderboard`
@@ -187,6 +191,8 @@ The following is an initial interface proposal; exact route names can be finaliz
 - Teacher/admin invite-code routes under `/api/teacher/invite-codes` (create and list)
 
 The attempt submission endpoint must calculate the score using server-side quiz data. Do not trust a score or correct-answer key supplied by the browser.
+
+An initialized attempt is not a completion record; it counts only once submitted. Submission must reference a valid in-progress attempt for the current user, and the server enforces the timed-mode deadline from the stored start timestamp.
 
 ## Visual theme and color scheme
 
@@ -252,6 +258,7 @@ Also delivered during this phase, pulled forward from Phase 5: the two individua
 - Add the downloadable CSV template, upload, preview, row-level validation, and error display.
 - Apply valid imports transactionally; reject invalid uploads without partial writes.
 - Enforce the minimum-question rule before a quiz can be published.
+- Apply the deletion rule for published quizzes: a deletion that would drop a quiz below ten valid questions unpublishes it (with a warning), and republishing requires ten valid questions again.
 - Add invite-code generation for teacher/admin accounts.
 - Test permissions, invalid data, duplicate submissions, and import rollback behavior.
 
@@ -297,3 +304,4 @@ Also delivered during this phase, pulled forward from Phase 5: the two individua
 - CSV import is add-only; edits to existing questions happen in the question editor.
 - Attempts store the selected answer for each question, enabling Feature 2 review. Answer-by-answer review of past attempts is in scope through Feature 2.
 - The color scheme was updated to the four-color palette — #fffdee (cream), #fbd1e6 (blush pink), #878787 (warm gray), #31261c (espresso brown) — replacing the original navy + gold. Layout, typography, and arcade styling are unchanged, and all branding remains original artwork.
+- Specification-review clarifications: the CSV `quiz` column matches existing quiz titles (never internal IDs, and import never creates quizzes); deleting a question that would drop a published quiz below ten valid questions unpublishes the quiz; timed attempts initialize through a start endpoint that returns the server-side start timestamp and deadline before submission.
