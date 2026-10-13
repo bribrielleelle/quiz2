@@ -188,6 +188,23 @@ The following is an initial interface proposal; exact route names can be finaliz
 
 The attempt submission endpoint must calculate the score using server-side quiz data. Do not trust a score or correct-answer key supplied by the browser.
 
+## Visual theme and color scheme
+
+The app is themed on a four-color palette. Light mode is the default; the nav toggle switches to dark mode and the choice is remembered per browser.
+
+| Role | Light (default) | Dark |
+| --- | --- | --- |
+| Page background | `#fffdee` (cream) | `#1b140d` (deep espresso) |
+| Cards and panels | `#ffffff` | `#31261c` (espresso) |
+| Text and primary lines | `#31261c` (espresso brown) | `#fffdee` (cream) |
+| Accent — buttons, badges, highlights, first place | `#fbd1e6` (blush pink) | `#fbd1e6` (blush pink) |
+| Muted text | `#878787` (warm gray) | `#878787` (warm gray) |
+
+- Every other shade on screen is a tint or shade of these four colors.
+- Typography stays Poppins headings + Inter body, with 'Press Start 2P' reserved for timers and scores.
+- Retro-arcade pixel touches (hard offset shadows, pixel-corner cards, uppercase button labels) remain unchanged.
+- Branding stays original: Pusheen imagery is subject matter only and never appears in the app's UI or logo.
+
 ## Development phases and status
 
 The delivery plan below mirrors `docs/development-phases.md`, with current status. The phases are ordered; each is completed and verified before the next begins.
@@ -279,3 +296,4 @@ Also delivered during this phase, pulled forward from Phase 5: the two individua
 - Teacher/admin accounts are provisioned through single-use admin invite codes; the first teacher/admin in each environment comes from a one-time bootstrap script using an environment secret.
 - CSV import is add-only; edits to existing questions happen in the question editor.
 - Attempts store the selected answer for each question, enabling Feature 2 review. Answer-by-answer review of past attempts is in scope through Feature 2.
+- The color scheme was updated to the four-color palette — #fffdee (cream), #fbd1e6 (blush pink), #878787 (warm gray), #31261c (espresso brown) — replacing the original navy + gold. Layout, typography, and arcade styling are unchanged, and all branding remains original artwork.
